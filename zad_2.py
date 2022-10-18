@@ -48,7 +48,7 @@ class Book(Library):
     def __str__(self) -> str:
         return f"{self.library.__str__()}, {self.publication_date}, {self.author_name}, {self.author_surname}, {self.number_of_pages}"
 class Order(Employee, Student, Book):
-    def __init__(self, employee: Employee, student: Student,books: Book, order_date):
+    def __init__(self, employee: Employee, student: Student,books: list[Book], order_date):
         self.employee = employee
         self.student = student
         self.books = books
@@ -83,8 +83,8 @@ s3_name = 'John'
 s3_marks = [30,60,40,80]
 s3 = Student(s3_name, s3_marks)
 
-order1 = Order(emp1, s3, book1, '22-03-2022')
-order2 = Order(emp2, s2, book5, '22-03-2022')
+order1 = Order(emp1, s3, [book1,book2,book3], '22-03-2022')
+order2 = Order(emp2, s2, [book4,book5], '22-03-2022')
 
 print(order1.__str__())
 print(order2.__str__())

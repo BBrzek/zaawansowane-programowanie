@@ -1,5 +1,8 @@
 from flask import Flask
 from services.movies import list_of_movies
+from services.links import list_of_links
+from services.ratings import list_of_ratings
+from services.tags import list_of_tags
 import json
 app = Flask(__name__)
 
@@ -8,15 +11,15 @@ def movies_json():
     return json.dumps([x.__dict__ for x in list_of_movies])
 
 @app.route("/links")
-def movies_json():
-    return json.dumps([x.__dict__ for x in list_of_movies])
+def links_json():
+    return json.dumps([x.__dict__ for x in list_of_links])
 
 @app.route("/ratings")
-def movies_json():
+def ratings_json():
     return json.dumps([x.__dict__ for x in list_of_movies])
 
 @app.route("/tags")
-def movies_json():
+def tags_json():
     return json.dumps([x.__dict__ for x in list_of_movies])
 
 if __name__ == '__app__':

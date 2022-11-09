@@ -16,11 +16,11 @@ def links_json():
 
 @app.route("/ratings")
 def ratings_json():
-    return json.dumps([x.__dict__ for x in list_of_movies])
+    return json.dumps([x.__dict__ for x in list_of_ratings])
 
 @app.route("/tags")
 def tags_json():
-    return json.dumps([x.__dict__ for x in list_of_movies])
+    return json.dumps([x.__dict__ for x in list_of_tags])
 
 if __name__ == '__app__':
     app.run()

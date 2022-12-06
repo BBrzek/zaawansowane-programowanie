@@ -1,9 +1,6 @@
-import os
 import cv2 as cv
 import tensorflow as tf
 import tensorflow_hub as hub
-import matplotlib.pyplot as plt
-import numpy
 
 
 def process_image(image_path: str):
@@ -40,7 +37,7 @@ def show_detected_people(image_path, model):
 
     counter = 0
     for (a, b, c, d), score, person in detection_pack:
-        if score < 0.15 or person != 1:
+        if score < 0.35 or person != 1:
             continue
         img_boxes = cv.rectangle(image_resized, (b, c), (d, a), (0, 255, 0), 5)
         counter += 1

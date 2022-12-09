@@ -46,7 +46,7 @@ To do
 -create function that load file to openCv from file storage
 through numpy.
 -create class with str of image from file.read() and 2nd
-parametr with person counter
+parameter with person counter
 -return it as json
 
 ??? to do

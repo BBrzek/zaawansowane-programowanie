@@ -1,10 +1,11 @@
 import cv2 as cv
 import tensorflow as tf
-import tensorflow_hub as hub
+import numpy
 
 
-def process_image(image_path: str):
-    img = cv.imread(image_path)
+def process_image(image: str):
+    img = numpy.fromstring(image, numpy.uint8)
+    img = cv.imdecode(img, cv.IMREAD_UNCHANGED)
     img_resize_1028 = cv.resize(img, (1028, 1028))
     img_rgb = cv.cvtColor(img_resize_1028, cv.COLOR_BGR2RGB)
     img_tf = tf.convert_to_tensor(img_rgb, dtype=tf.uint8)
@@ -31,24 +32,22 @@ def person_detection(model, image_tf):
     else:
         return "Smth wrong with len. boxes, scores, classes"
 
-def show_detected_people(image_path, model):
-    image_tf, image_resized = process_image(image_path)
-    detection_pack = person_detection(model, image_tf)
 
+def show_detected_people(upload_dir: str, image: str, model):
+    image_tf, image_resized = process_image(image)
+    detection_pack = person_detection(model, image_tf)
     counter = 0
     for (a, b, c, d), score, person in detection_pack:
         if score < 0.35 or person != 1:
             continue
-        img_boxes = cv.rectangle(image_resized, (b, c), (d, a), (0, 255, 0), 5)
+        image_resized = cv.rectangle(image_resized, (b, c), (d, a), (0, 255, 0), 5)
         counter += 1
 
-    cv.imshow('graycsale image', img_boxes)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+    cv.imwrite(upload_dir, image_resized)
+    return counter
 
-img_path = './test/2.png'
-MODEL = hub.load("https://tfhub.dev/tensorflow/efficientdet/lite2/detection/1")
-show_detected_people(img_path, MODEL)
+
+
 
 '''
 import os

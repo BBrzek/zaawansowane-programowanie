@@ -27,29 +27,34 @@ def allowed_file(filename: str) -> bool:
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/person_detection/', methods=['GET', 'POST'])
+@app.route('/person_detection', methods=['GET', 'POST'])
 def person_detection():
     if request.method == 'POST':
+
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
 
-        file = request.files['file']
+        files = request.files.getlist('file')
         ip_addr = request.remote_addr
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
+        list_of_files = []
+        print(files[0])
+        for file in files:
+            if file.filename == '':
+                flash('No selected file')
+                return redirect(request.url)
 
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            path = os.path.join(app.config['UPLOAD_FOLDER'], ip_addr)
-            if not os.path.exists(path):
-                os.mkdir(path)
-            image_path = os.path.join(path, filename)
-            counter = show_detected_people(image_path, file.read(), MODEL)
-            img_obj = Images(image_path, counter)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                path = os.path.join(app.config['UPLOAD_FOLDER'], ip_addr)
+                if not os.path.exists(path):
+                    os.mkdir(path)
+                image_path = os.path.join(path, filename)
+                counter = show_detected_people(image_path, file.read(), MODEL)
+                img_obj = Images(image_path, counter)
+                list_of_files.append(img_obj.__dict__)
 
-            return jsonify(img_obj.__dict__)
+        return jsonify(list_of_files)
 
     return jsonify({
         'message': 'No file uploaded'
@@ -60,8 +65,11 @@ def person_detection():
 def manual():
     if request.method == 'POST':
         data = person_detection()
-        path = os.path.join('..', data.json['image'])
-        return render_template('index.html', filepath=path)
+        paths = []
+        for obj_json in data.json:
+            paths.append(os.path.join('..', obj_json['image']))
+            print(obj_json['image'])
+        return render_template('index.html', paths=paths)
 
     return render_template('index.html')
 

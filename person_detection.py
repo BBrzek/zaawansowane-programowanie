@@ -22,7 +22,6 @@ def person_bool(classes):
 
 
 def person_detection(model, image_tf):
-
     boxes, scores, classes, num_detections = model(image_tf)
 
     boxes = boxes.numpy()[0].astype('int')
@@ -40,8 +39,9 @@ def show_detected_people(upload_dir: str, image: str, model):
     image_tf, image_resized, img_dimensions = process_image(image)
     detection_pack = person_detection(model, image_tf)
     counter = 0
+
     for (a, b, c, d), score, person in detection_pack:
-        if score < 0.35 or person != 1:
+        if score < 0.22 or person != 1:
             continue
         image_resized = cv.rectangle(image_resized, (b, c), (d, a), (0, 255, 0), 5)
         counter += 1

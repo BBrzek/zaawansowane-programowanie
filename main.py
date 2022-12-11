@@ -2,7 +2,6 @@ import os
 from flask import Flask, flash, request, redirect, render_template, jsonify
 from werkzeug.utils import secure_filename
 import tensorflow_hub as hub
-from base64 import b64encode
 from person_detection import show_detected_people
 
 
@@ -13,14 +12,14 @@ MODEL = hub.load("https://tfhub.dev/tensorflow/efficientdet/lite2/detection/1")
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-'''
-class Person_detection_image:
-    def __init__(self, image: str, person_count: int, filename: str):
-        self.image = image
-        self.person_count = person_count
-        self.filename = filename
 
-'''
+class Images:
+    def __init__(self, image: str, num_of_people):
+        self.image = image
+        self.num_of_people = num_of_people
+
+    def __str__(self):
+        print(f'Image: {self.image} | num of people: {self.num_of_people}')
 
 
 def allowed_file(filename: str) -> bool:
@@ -28,7 +27,7 @@ def allowed_file(filename: str) -> bool:
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/person_detection/', methods=['GET', 'POST'])
 def person_detection():
     if request.method == 'POST':
         if 'file' not in request.files:
@@ -42,33 +41,30 @@ def person_detection():
             return redirect(request.url)
 
         if file and allowed_file(file.filename):
-
-            '''filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))'''
-
             filename = secure_filename(file.filename)
             path = os.path.join(app.config['UPLOAD_FOLDER'], ip_addr)
             if not os.path.exists(path):
                 os.mkdir(path)
             image_path = os.path.join(path, filename)
             counter = show_detected_people(image_path, file.read(), MODEL)
+            img_obj = Images(image_path, counter)
 
-
-            return f'{counter}' #jsonify({'image': )}) #render_template("index.html", filepath=os.path.join(app.config['UPLOAD_FOLDER'], filename))#send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename), mimetype='image/png')   #render_template("index.html", filepath=os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
+            return jsonify(img_obj.__dict__)
 
     return jsonify({
         'message': 'No file uploaded'
     })
-'''
-@app.route('/interface', methods=['GET', 'POST'])
-def interface():
-    data = person_detection()
 
 
-To do
--create upload interface
--save file driection as lists and person
-'''
+@app.route('/person_detection/manual', methods=['GET', 'POST'])
+def manual():
+    if request.method == 'POST':
+        data = person_detection()
+        path = os.path.join('..', data.json['image'])
+        return render_template('index.html', filepath=path)
+
+    return render_template('index.html')
+
+
 if __name__ == '__main__':
     app.run()

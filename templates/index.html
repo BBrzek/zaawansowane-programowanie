@@ -5,10 +5,14 @@
             <input type="submit" value="Upload">
         </form>
 
-        {% for image_path in paths %}
+        <ul style="list-style: none;">
+        {% for image_path, num_of_people in images_wih_numbers %}
 
+            <li>Number of people in the photo: {{ num_of_people }}</li>
             <li><img src="{{ image_path }}"></li>
+            <hr>
 
         {% endfor %}
+        </ul>
     </body>
 </html>

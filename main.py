@@ -3,23 +3,15 @@ from flask import Flask, request, render_template, jsonify
 from werkzeug.utils import secure_filename
 import tensorflow_hub as hub
 from person_detection import show_detected_people
+from classes.Images import Images
+import flask
 
-
-UPLOAD_FOLDER = 'static/uploads/'
+#UPLOAD_FOLDER = 'static/uploads/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 MODEL = hub.load("https://tfhub.dev/tensorflow/efficientdet/lite2/detection/1")
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-
-class Images:
-    def __init__(self, image: str, num_of_people):
-        self.image = image
-        self.num_of_people = num_of_people
-
-    def __str__(self):
-        print(f'Image: {self.image} | num of people: {self.num_of_people}')
+app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_PATH')
 
 
 def allowed_file(filename: str) -> bool:

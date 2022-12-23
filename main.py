@@ -3,8 +3,7 @@ from flask import Flask, request, render_template, jsonify
 from werkzeug.utils import secure_filename
 import tensorflow_hub as hub
 from person_detection import show_detected_people
-from classes.Images import Images
-import flask
+from services.Images import Images
 
 #UPLOAD_FOLDER = 'static/uploads/'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}

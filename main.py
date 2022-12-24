@@ -42,8 +42,8 @@ def person_detection():
                 if not os.path.exists(path):
                     os.mkdir(path)
                 image_path = os.path.join(path, filename)
-                counter = show_detected_people(image_path, file.read(), MODEL)
-                img_obj = Images(image_path, counter)
+                counter, cpu_time, gpu_time = show_detected_people(image_path, file.read(), MODEL)
+                img_obj = Images(image_path, counter, cpu_time, gpu_time)
                 list_of_files.append(img_obj.__dict__)
 
         return jsonify(list_of_files)

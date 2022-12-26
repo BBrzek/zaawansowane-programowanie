@@ -1,18 +1,29 @@
 <html>
+    <head>
+        <style>
+            table, th, td {
+              border: 1px solid black;
+              border-collapse: collapse;
+            }
+        </style>
+    </head>
     <body>
         <form method="POST" enctype="multipart/form-data">
             <input type="file" name="file" multiple>
             <input type="submit" value="Upload">
         </form>
-
-        <ul style="list-style: none;">
-        {% for image_path, num_of_people in images_wih_numbers %}
-
-            <li>Number of people in the photo: {{ num_of_people }}</li>
-            <li><img src="{{ image_path }}"></li>
-            <hr>
-
-        {% endfor %}
-        </ul>
+            <table>
+                {% for process, image_path, num_of_people, time in images_wih_numbers %}
+                {% if loop.index % 2 == 1%}<tr><th colspan="2">{{ compare[loop.index] }}</th></tr><tr>{% endif %}
+                    <td>
+                        <ul style="list-style: none;">
+                            <li>By {{ process }}</li>
+                            <li>Number of people in the photo: {{ num_of_people }}. Processing time {{ time }}</li>
+                            <li><img src="{{ image_path }}"></li>
+                        </ul>
+                    </td>
+                    {% if loop.index % 2 == 0%}</tr>{% endif %}
+                {% endfor %}
+            </table>
     </body>
 </html>

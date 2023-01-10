@@ -15,8 +15,8 @@ if device_name != '/device:GPU:0':
     raise SystemError('GPU device not found')
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-with tf.device('/device:GPU:0'):
-    MODEL = hub.load("https://tfhub.dev/tensorflow/efficientdet/lite2/detection/1")
+
+MODEL = hub.load("https://tfhub.dev/tensorflow/efficientdet/lite2/detection/1")
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = os.environ.get('UPLOAD_PATH')
